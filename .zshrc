@@ -1,8 +1,12 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
+if [[ "$TERM_PROGRAM" != "vscode" ]]; then
+    fastfetch
+fi
+
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-    #source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 # Created by newuser for 5.9
@@ -16,7 +20,7 @@ export "MICRO_TRUECOLOR=1"
 export EZA_CONFIG_DIR="$HOME/.config/eza/"
 export EDITOR=micro
 export VISUAL=micro
-
+export TERMINAL=kitty
 
 bindkey '^[[A' up-line-or-history
 bindkey '^[[B' down-line-or-history
@@ -99,17 +103,13 @@ alias gmn='npx @google/gemini-cli'
 
 # POWER
 alias sn='shutdown now'
-alias suspend='systemctl suspend'
+alias sp='systemctl suspend'
 alias rb='reboot'
 
 # DISPLAY / GPU
-alias checkmod='supergfxctl -g'
-alias listmod='supergfxctl -s'
-alias modintel='supergfxctl -m Integrated'
-alias modhybrid='supergfxctl -m Hybrid'
-alias ac='kscreen-doctor output.eDP-2.mode.1920x1200@60 && sleep 3 && modintel && loginctl terminate-user $USER'
-alias plug='kscreen-doctor output.eDP-2.mode.1920x1200@165 && sleep 3 && modhybrid && loginctl terminate-user $USER'
-alias nv='nvidia-smi'
+alias turbon='echo 0 | sudo tee /sys/devices/system/cpu/intel_pstate/no_turbo && sleep 1 && checktur'
+alias turboff='echo 1 | sudo tee /sys/devices/system/cpu/intel_pstate/no_turbo && sleep 1 && checktur'
+alias checktur='echo "Turbo boost: $(if [ $(cat /sys/devices/system/cpu/intel_pstate/no_turbo) -eq 0 ]; then echo "ON"; else echo "OFF"; fi)"'
 
 # GIT
 alias gs='la && git status'
@@ -126,8 +126,9 @@ gacp() {
 # EDITORS
 alias nano='micro'
 alias vim='nvim'
-alias vi='nvim'
+alias nv='nvim'
 alias mic='micro'
+alias code='visual-studio-code-electron'
 
 # FILE VIEWERS
 alias see='bat'
@@ -154,9 +155,12 @@ alias lt='ls -T'
 alias rm='rm -I'
 alias x='exit'
 alias c='clear'
+alias lc='ls -s Extension'
+alias cd='z'
 # SHELL UTILS
-alias grep='grep --color=auto'
 alias color='color_check'
+alias grep='rg --color=auto --line-number --smart-case'
+
 fuck() { sudo $(fc -ln -1) }
 extract() {
   if [ -f "$1" ]; then
@@ -192,21 +196,13 @@ weather() {
 }
 alias udanraksu='weather semarang'
 
-
+eval "$(zoxide init zsh)"
 f() { eval $(thefuck $(fc -ln -1)); }
-
-
-
-# Created by `pipx` on 2025-12-31 05:14:11
 
 #zprof
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-
 #typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 
-if [[ "$TERM_PROGRAM" != "vscode" ]]; then
-    fastfetch
-fi
+
